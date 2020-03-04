@@ -1,0 +1,60 @@
+{ message: 'Employee Details Requested',
+  level: 'info',
+  label: 'test label',
+  timestamp: '2020-03-03T18:19:08.824Z' }
+{ message: 'Employee Details Requested',
+  level: 'info',
+  label: 'test label',
+  timestamp: '2020-03-03T18:20:35.483Z' }
+{ message: 'Employee Details Requested',
+  level: 'info',
+  label: 'test label',
+  timestamp: '2020-03-03T18:20:53.098Z' }
+{ message: 'Employee Details Requested',
+  level: 'info',
+  label: 'test label',
+  timestamp: '2020-03-03T18:21:00.635Z' }
+{ message: 'Employee Details Requested',
+  level: 'info',
+  label: 'test label',
+  timestamp: '2020-03-03T18:21:02.553Z' }
+{ message: 'Employee Details Added with emp id 11',
+  level: 'info',
+  label: 'test label',
+  timestamp: '2020-03-03T18:21:40.269Z' }
+{ message: 'Employee Details Added with emp id 12',
+  level: 'info',
+  label: 'test label',
+  timestamp: '2020-03-03T18:25:19.891Z' }
+{ message: 'Employee Details Added with emp id 13',
+  level: 'info',
+  label: 'test label',
+  timestamp: '2020-03-03T18:25:23.735Z' }
+{ message: 'Employee Details Updated for emp id 1',
+  level: 'info',
+  label: 'test label',
+  timestamp: '2020-03-03T18:28:01.275Z' }
+{ message: 'Employee Details Updated for emp id 134',
+  level: 'info',
+  label: 'test label',
+  timestamp: '2020-03-03T18:28:06.282Z' }
+{ message: 'Employee Details fetched for emp id 134',
+  level: 'info',
+  label: 'test label',
+  timestamp: '2020-03-03T18:28:57.448Z' }
+{ message: 'Employee Details fetched for emp id 134',
+  level: 'info',
+  label: 'test label',
+  timestamp: '2020-03-03T18:29:03.185Z' }
+{ message: 'Employee Details fetched for emp id 134',
+  level: 'info',
+  label: 'test label',
+  timestamp: '2020-03-03T18:29:18.367Z' }
+{ message: 'Employee Details fetched for emp id 134',
+  level: 'info',
+  label: 'test label',
+  timestamp: '2020-03-03T18:30:36.763Z' }
+{ message: 'Employee details not exsits for emp id 134',
+  level: 'error',
+  label: 'test label',
+  timestamp: '2020-03-03T18:30:36.774Z' }
