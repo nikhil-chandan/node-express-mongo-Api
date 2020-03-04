@@ -8,6 +8,8 @@ const { combine, timestamp, label, prettyPrint } = format;
 var select = require('mongo-select').select();
 var projection = select.include(['firstName', 'lastName', 'address', 'mobileNo', 
                                  'employeeId','designation','location']);
+ projection = select.exclude(['_id']);
+
 
 const logger = winston.createLogger({
     format: combine(
@@ -84,7 +86,7 @@ var getAllEmployees = async (req, res) => {
         res.json(employees);
         logger.info('Employee Details Requested');
     } catch (err) {
-        logger.info('Employee Details Fetching Error ' + err.name)
+        logger.error('Employee Details Fetching Error ' + err.name)
         res.json({
             message: err
         });
