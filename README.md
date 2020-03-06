@@ -16,5 +16,5 @@ Test Cases Run
 - npm test
 
 Run App
-- npm main
+- npm start
 
