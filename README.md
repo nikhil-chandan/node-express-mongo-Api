@@ -1,6 +1,6 @@
 # Employee-Node-Mongo-Api
 
-CRUD operation with Node.js and MongoDB
+CRUD operation with Node.js(Express Framework) and MongoDB
 
 Best Practices Followed
 1. Test Cases Implementation using chai and mocha.
