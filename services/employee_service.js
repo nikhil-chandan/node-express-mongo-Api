@@ -1,35 +1,11 @@
 const Employee = require('../models/employee');
 var Q = require('Q');
-const express = require('express');
-const winston = require('winston');
-const app = express();
-const { createLogger, format, transports} = require('winston');
-const { combine, timestamp, label, prettyPrint } = format;
 var select = require('mongo-select').select();
 var projection = select.include(['firstName', 'lastName', 'address', 'mobileNo', 
                                  'employeeId','designation','location']);
- projection = select.exclude(['_id']);
-
-
-const logger = winston.createLogger({
-    format: combine(
-        label({
-            label: 'test label'
-        }),
-        timestamp(),
-        prettyPrint()
-    ),
-    transports: [
-        new winston.transports.File({
-            filename: 'info.log',
-            level: 'info'
-        }),
-        new winston.transports.File({
-            filename: 'errors.log',
-            level: 'error'
-        })
-    ]
-});
+projection = select.exclude(['_id','__v']);
+var logModule = require('../startup/logging');
+var logger = logModule.logger;
 
 function getEmpId() {
     var deferred = Q.defer();
