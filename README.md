@@ -1,4 +1,4 @@
-# Employee-Node-Mongo-Api
+# Sample-Node-Mongo-Api
 
 CRUD operation with Node.js(Express Framework) and MongoDB
 
