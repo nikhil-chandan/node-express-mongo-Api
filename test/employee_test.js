@@ -23,3 +23,26 @@ chai.use(chaiHttp);
           });
     });
 });
+
+
+describe('/POST Employee', () => {
+    // with error, pages is required
+    it('Adding an employee', (done) => {
+      let employee = { 
+        "firstName": "sp12321",
+        "address": "mumbai",
+        "mobileNo": "9876543210",
+        "designation": "Software Eng.",
+        "location": "India",
+        "isDeleted": "false"
+    }
+      chai.request(app)
+        .post('/api/employees')
+        .send( employee )
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res).to.be.an('object');
+          done();
+        });
+    });
+});
