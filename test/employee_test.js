@@ -42,11 +42,11 @@ describe('/GET Employee by id:', () => {
 describe('/POST Employee', () => {
     it('Adding an employee', (done) => {
         let employee = {
-            "firstName": "sp12321",
-            "address": "mumbai",
+            "firstName": "test-chai",
+            "address": "Atartica",
             "mobileNo": "9876543210",
-            "designation": "Software Eng.",
-            "location": "India",
+            "designation": "Programmer",
+            "location": "Atartica",
             "isDeleted": "false"
         }
         chai.request(app)
