@@ -7,6 +7,7 @@ const cors = require('cors');
 app.use(cors());
 app.use(bodyParser.json());
 
+
 const employeesRoute = require('./routes/employees');
 
 app.use('/api/employees', employeesRoute);
@@ -25,3 +26,6 @@ mongoose.connect('mongodb://localhost/employee-db', {useNewUrlParser: true, useU
 app.listen(port, (err) => {
     console.log(err);
 });
+
+
+module.exports = app;
