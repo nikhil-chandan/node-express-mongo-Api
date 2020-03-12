@@ -89,22 +89,23 @@ const getEmployeeById = async (req, res) => {
         const employees = await Employee.find({
             employeeId: empId
         }, projection);
-        logger.info('Employee Details fetched for emp id ' + empId);
         if (employees.length == 0) {
-            logger.error('Employee details not exsits for emp id ' + empId)
             res.json({
                 "message": "No employee found"
             });
+            logger.error('Employee details not exsits for emp id ' + empId)
+        }else if(employees.length == 1){
+            res.json({
+                data: employees,
+                message: "Employee found"
+            });
+            logger.info('Employee Details fetched for emp id ' + empId);
         }
-        res.json({
-            data: employees,
-            message: "Employee found"
-        });
     } catch (err) {
-        logger.error('Employee details not fetched' + err.name)
         res.json({
             message: err
         });
+        logger.error('Employee details not fetched' + err.name)
     }
 }
 
