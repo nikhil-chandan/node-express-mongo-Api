@@ -1,50 +1,59 @@
 const Employee = require('../models/employee');
-var Q = require('Q');
-var select = require('mongo-select').select();
-var projection = select.include(['firstName', 'lastName', 'address', 'mobileNo', 
-                                 'employeeId','designation','location']);
-projection = select.exclude(['_id','__v']);
-var logModule = require('../startup/logging');
-var logger = logModule.logger;
+const Q = require('Q');
+const select = require('mongo-select').select();
+const projection = select.exclude(['_id', '__v']);
+const logModule = require('../startup/logging');
+const logger = logModule.logger;
 
 function getEmpId() {
-    var deferred = Q.defer();
+    const deferred = Q.defer();
     try {
-        Employee
-            .estimatedDocumentCount()
-            .then(countEmp => {
-                if (countEmp) {
-                    countEmp = countEmp + 1;
-                    console.log(countEmp)
-                    deferred.resolve(countEmp);
+        Employee.find().sort({
+                employeeId: -1
+            }).limit(1)
+            .then(lastEmpId => {
+                if (lastEmpId) {
+                    lastEmpId = lastEmpId[0].employeeId + 1;
+                    console.log(lastEmpId);
+                    deferred.resolve(lastEmpId);
                 } else {
-                    //if no emp in db
-                    countEmp = 1;
-                    deferred.resolve(countEmp);
+                    lastEmpId = 1;
+                    deferred.resolve(lastEmpId);
                 }
-            })
+            });
         return deferred.promise;
     } catch (err) {
-        logger.error('Unable to get new emp id ' + err.name)
+        logger.error('Unable to get new emp id ' + err.name);
         console.log(err)
     }
 }
 
-var postEmployee = async (req, res) => {
+const postEmployee = async (req, res) => {
     try {
-        getEmpId().then(async function (countEmp) {
+        getEmpId().then(async function (empId) {
             const employee = new Employee({
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 address: req.body.address,
                 mobileNo: req.body.mobileNo,
-                employeeId: parseInt(countEmp),
+                employeeId: parseInt(empId),
                 designation: req.body.designation,
                 location: req.body.location,
             });
-            const savedEmployee = await employee.save();
-            res.json(savedEmployee);
-            logger.info('Employee Details Added with emp id ' + countEmp)
+
+            await employee.save();
+            Employee.find({
+                    employeeId: parseInt(empId)
+                }, projection)
+                .then(savedEmployee => {
+                    if (savedEmployee) {
+                        res.json({
+                            "data": savedEmployee[0],
+                            "message": `Employee Created with emp id ${empId}`
+                        });
+                    }
+                })
+            logger.info(`Employee Details Added with emp id ${empId}`);
         }).fail(function (err) {
             console.log(err)
         });
@@ -56,10 +65,15 @@ var postEmployee = async (req, res) => {
     }
 }
 
-var getAllEmployees = async (req, res) => {
+const getAllEmployees = async (req, res) => {
     try {
-        const employees = await Employee.find({}, projection);
-        res.json(employees);
+        const employees = await Employee.find({
+            "isDeleted": false
+        }, projection);
+        res.json({
+            data: employees,
+            message: "All employee data"
+        });
         logger.info('Employee Details Requested');
     } catch (err) {
         logger.error('Employee Details Fetching Error ' + err.name)
@@ -69,22 +83,23 @@ var getAllEmployees = async (req, res) => {
     }
 }
 
-var getEmployeeById = async (req, res) => {
-    var empId = parseInt(req.params.id);
+const getEmployeeById = async (req, res) => {
+    const empId = parseInt(req.params.id);
     try {
-        const employees = await Employee.find({}, projection);
-        var filterEmp = employees.filter(function (row) {
-            if (row.employeeId == empId) {
-                return true
-            } else {
-                return false;
-            }
-        });
+        const employees = await Employee.find({
+            employeeId: empId
+        }, projection);
         logger.info('Employee Details fetched for emp id ' + empId);
-        if(filterEmp.length == 0){
+        if (employees.length == 0) {
             logger.error('Employee details not exsits for emp id ' + empId)
+            res.json({
+                "message": "No employee found"
+            });
         }
-        res.json(filterEmp);
+        res.json({
+            data: employees,
+            message: "Employee found"
+        });
     } catch (err) {
         logger.error('Employee details not fetched' + err.name)
         res.json({
@@ -93,14 +108,18 @@ var getEmployeeById = async (req, res) => {
     }
 }
 
-var restoreEmployee = async (req, res) => {
+const restoreEmployee = async (req, res) => {
     try {
         const employee = await Employee.findOne({
-            _id: req.params.id
+            employeeId: req.params.id
         });
         employee.isDeleted = false;
         await employee.save();
-        res.status(200).send();
+        res.json({
+            data: true,
+            message: "Restored"
+        });
+        //  res.status(200).send("Restored");
         logger.info('Employee Details restored with id ' + req.params.id);
     } catch (err) {
         logger.error('Employee Details not restored with id ' + req.params.id + err.name);
@@ -110,18 +129,23 @@ var restoreEmployee = async (req, res) => {
     }
 }
 
-var patchEmployee = async (req, res) => {
-    var empId = parseInt(req.params.id);
+
+
+const patchEmployee = async (req, res) => {
+    const empId = parseInt(req.params.id);
     try {
         Employee.findOneAndUpdate({
             employeeId: empId
         }, req.body, {
             new: true
-        }, (err, doc) => {
+        }, (err) => {
             if (err) {
                 console.log("Something wrong when updating data!" + err);
             }
-            res.json(doc);
+            res.json({
+                data: empId,
+                message: "Employee Updated Successfully"
+            });
         });
         logger.info('Employee Details patched with id ' + empId);
     } catch (err) {
@@ -132,14 +156,19 @@ var patchEmployee = async (req, res) => {
     }
 }
 
-var deleteEmployee = async (req, res) => {
+
+
+const deleteEmployee = async (req, res) => {
     try {
         const employee = await Employee.findOne({
-            _id: req.params.id
+            employeeId: req.params.id
         });
         employee.isDeleted = true;
         await employee.save();
-        res.status(200).send();
+        res.json({
+            data: req.params.id,
+            message: "Employee Deleted Successfully"
+        });
         logger.info('Employee Details deleted with id ' + req.params.id);
     } catch (err) {
         res.json({
@@ -147,6 +176,8 @@ var deleteEmployee = async (req, res) => {
         });
     }
 }
+
+
 
 module.exports = {
     postEmployee: postEmployee,

@@ -5,9 +5,9 @@ const app = require('../app');
 const should = chai.should();
 const expect = chai.expect;
 
-
 chai.use(require('chai-json-schema'));
 chai.use(chaiHttp);
+
 
 //get all emp
 describe('/GET all Employee:', () => {
@@ -17,7 +17,8 @@ describe('/GET all Employee:', () => {
             .end((err, res) => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
-                expect(res.body).to.be.an('array');
+                expect(res.body).to.be.an('object');
+                expect(res.body.message.should.be.eql('All employee data'));
                 done();
             });
     });
@@ -32,7 +33,8 @@ describe('/GET Employee by id:', () => {
             .end((err, res) => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.json;
-                expect(res.body).to.be.an('array');
+                expect(res.body).to.be.an('object');
+                expect(res.body.message.should.be.eql('Employee found'));
                 done();
             });
     });
@@ -55,6 +57,7 @@ describe('/POST Employee', () => {
             .end((err, res) => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.an('object');
+                expect(res.body.message.should.be.eql("Employee Created with emp id " + res.body.data.employeeId));
                 done();
             });
     });
@@ -73,6 +76,7 @@ describe('/Patch Employee', () => {
             .end((err, res) => {
                 expect(res).to.have.status(200);
                 expect(res).to.be.an('object');
+                expect(res.body.message.should.be.eql("Employee Updated Successfully"));
                 done();
             });
     });
