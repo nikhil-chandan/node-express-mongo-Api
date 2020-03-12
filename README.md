@@ -57,7 +57,6 @@ function getEmpId() {
 
 
 
-
 var postEmployee = async (req, res) => {
     try {
         getEmpId().then(async function (countEmp) {
@@ -71,7 +70,7 @@ var postEmployee = async (req, res) => {
                 location: req.body.location,
             });
              await employee.save();
-            Employee.find({}, projection).sort({employeeId: -1}).limit(1)
+            Employee.find({employeeId: parseInt(countEmp)}, projection)
             .then(savedEmployee => {
                 if (savedEmployee) {
                     res.json(savedEmployee[0]);
@@ -88,4 +87,3 @@ var postEmployee = async (req, res) => {
         });
     }
 }
-
