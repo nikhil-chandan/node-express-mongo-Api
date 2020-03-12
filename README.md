@@ -18,3 +18,26 @@ Test Cases Run
 Run App
 - npm start
 
+
+
+function getEmpId() {
+    var deferred = Q.defer();
+    try {
+        Employee.find().sort({employeeId:-1}).limit(1)
+        .then(lastEmpId => {
+            if (lastEmpId) {
+                lastEmpId = lastEmpId[0].employeeId + 1;
+                console.log(lastEmpId)
+                deferred.resolve(lastEmpId);
+            } else {
+                //if no emp in db
+                lastEmpId = 1;
+                deferred.resolve(lastEmpId);
+            }
+        })
+        return deferred.promise;
+    } catch (err) {
+        logger.error('Unable to get new emp id ' + err.name)
+        console.log(err)
+    }
+}
