@@ -41,3 +41,51 @@ function getEmpId() {
         console.log(err)
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var postEmployee = async (req, res) => {
+    try {
+        getEmpId().then(async function (countEmp) {
+            const employee = new Employee({
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                address: req.body.address,
+                mobileNo: req.body.mobileNo,
+                employeeId: parseInt(countEmp),
+                designation: req.body.designation,
+                location: req.body.location,
+            });
+             await employee.save();
+            Employee.find({}, projection).sort({employeeId: -1}).limit(1)
+            .then(savedEmployee => {
+                if (savedEmployee) {
+                    res.json(savedEmployee[0]);
+                } 
+            })
+            logger.info('Employee Details Added with emp id ' + countEmp)
+        }).fail(function (err) {
+            console.log(err)
+        });
+    } catch (err) {
+        logger.error('Employee were not added' + err.name)
+        res.json({
+            message: err
+        });
+    }
+}
+
